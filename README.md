@@ -1,51 +1,28 @@
 
+F28DA: Data Structures & Algorithms CW1 2016/17
 
-Assessed Individual Coursework 1 
+Overview
 
-
-Spell-Checker
-
-
-F28DA: Data Structures & Algorithms
-
-23 – 10 – 2016 
+In this assignment, you are requested to write a simple spell-checker program. Your program should be named SpellCheck and it will take as command line arguments two file names. The first name is the dictionary file which contains correctly spelled words (On Vision the file dictionary.txt has been provided). The second file contains the text to be spell-checked. Your program should first read all words from the dictionary file and insert them into a map data structure. Then your program should read words from the second file and check if they are in the map. For words that do exist in the map nothing needs to be done. For words which are not in the map, your program should suggest possible correct spellings by printing to the standard output. You should perform modifications of a misspelled word given in Section 2. In this assignment you will implement and compare (experimentally) a linked list based and a hash table based map.
 
 
+Modifications of Misspelled Word
 
-Program Specifications
-
-The program we are asked to develop is a spell-checker, used to correct some words of a text file passed as an argument, whilst comparing them with another file called dictionary which is also passed as an argument.
-The SpellCheck class, the class containing the main method, has two major methods performing the required tasks: 
-•	fillMap(): this is the method used to insert the words from the dictionary into the map.
-•	stringMispelled() : is used to find the incorrectly spelled words in the file, correcting them and inserting them into the "misspelled" map. This process is used to avoid printing the same word more than once. Finally returning a string in the format of: "wordToCorrect ---> correctedWords".
-There are also some helper methods used within in the methods listed above to perform the task of checking each word and to create a string from a map.
-
-I implemented my program with both the linkedlist and the hashtable ADT using the interface IMap as asked.
-The linked list part has been implemented extending the LinkedList Class provided by java and using all of it’s existing constructor and methods.
-The hashMap instead, has been totally implemented by me as we were not allowed to use any existing class. For a more clear idea, it is better to have a closer look at the class inside my project.
-This latter class has been implemented using an array of strings starting with the size of seven, which in turn, increases at the first prime number after the double of it when the max load factor (float number passed to the constructor to set the maximum “percentage” of the array fullness) is reached.                                                                     
-The strings are inserted using an hashcode produced by a method (also implemented by me) in the StringHashCode class, which is then processed to be inserted into the array using the operation HASHCODE modulo SIZEOFTHEARRAY.                                              
-If the cell we are trying to fill with the string is already full we try to find a new cell using another function (f(k) = (5 - CODE modulo 5) modulo SIZEOFTHEARRAY), this process is known as double hashing.
-
-To find and remove a string, I used a process similar to the one used for the inserting, however, when we remove an object we must insert a dummy value to facilitate and speed up the process of finding that value or one which collided with it. Some helper methods have also been implemented to avoid code duplication and increase cohesion.
+You should perform the modifications of a misspelled word to handle commonly made mistakes:
+• Letter substitution: go over all the characters in the misspelled word, and try to replace a character by any other character. In this case, if there are k characters in a word, the number of modifications to try is 26k. For example, in a misspelled word ’lat’, substituting ’c’ instead of ’l’ will produce a word ’cat’, which is in the dictionary.
+• Letter omission: try to omit (in turn, one by one) a single character in the misspelled word and see if the word with omitted character is in the dictionary. In this case, there are k modifications to try where k is the number of characters in the word. For example, if the misspelled word is ’catt’, omitting the last character ’t’ will produce a word ’cat’ which is in the dictionary.
+• Letter insertion: try to insert a letter in the misspelled word. In this case, if the word is k characters long, there are 26 ∗ (k + 1) modifications to try, since there are 26 characters to try to insert and
+k + 1 places (including the beginning and the end of the word) to insert a character. For example, for word ’plce’, inserting letter ’a’ in the middle will produce a correctly spelled word ’place’.
+ • Letter reversal: Try swapping every 2 adjacent characters. For a word of length k, there are k − 1 pairs to try to swap. For example in a misspelled word ’paernt’, swapping letters ’e’ and ’r’ will produce a correctly spelled word ’parent’.
+For each word which was misspelled, on a separate line, print out the misspelled word and all possible correct spellings that you found in the dictionary. For example, if your dictionary file contains the words ’cats like on of to play’, and the file to spell check contains 4 words: ’Catts lik o play’, the output should be:
+catts => cats
+lik => like
+o => on, to, of
+Notice that the list of possible correct spelling must contain only unique words. In the example above, for the misspelled word ’catts’, removing the first ’t’ or the second ’t’ leads to the same word ’cats’, but this word appears in the output only once. For the modifications of a word above, the Java class StringBuffer and its built-in methods are very useful.
+A file FileWordRead.java which will read the next word from an opened file is provided. See comments in the file FileWordRead.java for the usage. In this implementation, all words are converted to lower case so that the words ’Cat’ and ’cat’ are treated as one word. Thus all the words you read from the file using the program will be lowercase words.
 
 
+Implementation
 
+You are to implement the program based on a map, let us call it M . You will use M for storing the words in the dictionary input file specified by the first command line argument. After storing all the words in M , you should open the second file (the one to be spell-checked) for reading and look up the words in the second file in map M. If any word w of the second file is not in M, you have to try all possible modifications of w suggested above, in Section 2. Notice that different modifications may result in the same word. The implementation of the map, see sections below, insures that each map entry contains a unique word. Therefore, to make sure that there are no duplicates on the list of possible spellings, create a second map S (for each misspelled word), and insert all modifications of the misspelled words that are in map M. After you went over all modifications, print out all the words stored in map S.
 
-
-
-
-
-
-dictionary: d5.txt
-file to spellcheck: “injuries against inseccts ar pesristent”
-
-
-
-
-
-
-dictionary: dictionary.txt
-
-
-file to spellcheck: “teh cat is not teh seye t
